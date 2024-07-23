@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="icon.ico" type="image/x-icon" />
+    <link href="./assets/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="./assets/fontsawesome/css/all.min.css" rel="stylesheet" />
+    <link href="./assets/sweetalert/css/sweetalert2.min.css" rel="stylesheet" />
+    <title>Registrarme</title>
+  </head>
+
+  <body>
+    <section class="h-100">
+      <div class="container h-100">
+        <div class="row justify-content-sm-center h-100">
+          <div class="col-xxl-4 col-xl-5 col-lg-5 col-md-7 col-sm-9">
+            <div class="text-center my-5">
+              <img
+                src="./assets/images/twitter-1_icon-icons.com_71061.svg"
+                alt="logo"
+                width="100"
+              />
+              <h2>TwitterDupe</h2>
+            </div>
+            <div class="card shadow-lg">
+              <div class="card-body p-5">
+                <h1 class="fs-4 card-title fw-bold mb-4">Registrarme</h1>
+                <form class="needs-validation" novalidate="" autocomplete="off">
+                  <div class="mb-3">
+                    <label class="mb-2 text-muted" for="name">Nombre</label>
+                    <input
+                      id="name"
+                      type="text"
+                      class="form-control"
+                      name="name"
+                      value=""
+                      required
+                      autofocus
+                    />
+                    <div class="invalid-feedback">El nombre es obligatorio</div>
+                  </div>
+
+                  <div class="mb-3">
+                    <label class="mb-2 text-muted" for="name">Usuario</label>
+                    <input
+                      id="user"
+                      type="text"
+                      class="form-control"
+                      name="user"
+                      value=""
+                      required
+                    />
+                    <div class="invalid-feedback">El nombre es obligatorio</div>
+                  </div>
+
+                  <div class="mb-3">
+                    <label class="mb-2 text-muted" for="email"
+                      >Correo electrónico</label
+                    >
+                    <input
+                      id="email"
+                      type="email"
+                      class="form-control"
+                      name="email"
+                      value=""
+                      required
+                    />
+                    <div class="invalid-feedback">El correo no es válido</div>
+                  </div>
+
+                  <div class="mb-3">
+                    <label class="mb-2 text-muted" for="password"
+                      >Contraseña</label
+                    >
+                    <input
+                      id="password"
+                      type="password"
+                      class="form-control"
+                      name="password"
+                      required
+                    />
+                    <div class="invalid-feedback">
+                      Contraseña es obligatoria
+                    </div>
+                  </div>
+
+                  <div class="align-items-center d-flex">
+                    <button
+                      id="register"
+                      type="button"
+                      class="btn btn-primary ms-auto"
+                    >
+                      Registrarme
+                    </button>
+                  </div>
+                </form>
+              </div>
+              <div class="card-footer py-3 border-0">
+                <div class="text-center">
+                  Ya tienes una cuenta?
+                  <a href="login.html" class="text-dark">Iniciar sesión</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <script src="./js/script.js"></script>
+    <script src="./assets/sweetalert/js/sweetalert2.all.min.js"></script>
+    <script>
+      document
+        .getElementById("register")
+        .addEventListener("click", function () {
+          const name = document.getElementById("name").value;
+          const user = document.getElementById("user").value;
+          const email = document.getElementById("email").value;
+          const password = document.getElementById("password").value;
+
+          if (password.length < 8 || password.includes(' ')) {
+                Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: "La contraseña debe tener al menos 8 caracteres y no contener espacios.",
+                });
+                return; // Detener el proceso de registro si la validación falla
+            }
+
+          const formData = new FormData();
+          formData.append("name", name);
+          formData.append("user", user);
+          formData.append("email", email);
+          formData.append("password", password);
+
+          fetch("./php/register.php", {
+            method: "POST",
+            body: formData,
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              if (data.status === "success") {
+                Swal.fire({
+                    icon:"success",
+                    title:"Usuario creado exitosamente",
+                    showConfirmButton:false,
+                    timerProgressBar: true,
+                    timer:3000
+                }).then(() => {
+                        window.location.href = 'login.html';
+                    });
+              } else {
+                Swal.fire({
+                    icon:"error",
+                    title:"No se ha podido crear el usuario",
+                    text:data.message,
+                    showConfirmButton:false,
+                    timer:3000,
+                    timerProgressBar: true
+                })
+              }
+            })
+            .catch((error) => {
+              console.error("Error:", error);
+            });
+        });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,12 @@
+RewriteEngine On
+
+# Redirige la raíz del sitio a dashboard.php
+RewriteCond %{REQUEST_URI} ^/$
+RewriteRule ^$ /dashboard.php [L]
+
+# Redirige todas las solicitudes que no son archivos o directorios existentes
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# Redirige las solicitudes con el patrón /username a profile.php
+RewriteRule ^([^/]+)$ profile.php?username=$1 [L]

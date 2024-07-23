@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <link rel="icon" href="icon.ico" type="image/x-icon">
+    <link href="./assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="./assets/fontsawesome/css/all.min.css" rel="stylesheet">
+    <title>Iniciar Sesión</title>
+</head>
+
+<body>
+    <section class="h-100">
+        <div class="container h-100">
+            <div class="row justify-content-sm-center h-100">
+                <div class="col-xxl-4 col-xl-5 col-lg-5 col-md-7 col-sm-9">
+                    <div class="text-center my-5">
+                        <img src="./assets/images/twitter-1_icon-icons.com_71061.svg" alt="logo" width="100">
+                        <h2>TwitterDupe</h2>
+                    </div>
+                    <div class="card shadow-lg">
+                        <div class="card-body p-5">
+                            <h1 class="fs-4 card-title fw-bold mb-4">Login</h1>
+                            <form class="needs-validation" novalidate="" autocomplete="off" id="loginForm">
+                                <div class="mb-3">
+                                    <label class="mb-2 text-muted" for="user">Usuario</label>
+                                    <input id="user" type="text" class="form-control" name="user" required autofocus>
+                                    <div class="invalid-feedback">
+                                        Usuario es obligatorio
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <div class="mb-2 w-100">
+                                        <label class="text-muted" for="password">Contraseña</label>
+                                    </div>
+                                    <input id="password" type="password" class="form-control" name="password" required>
+                                    <div class="invalid-feedback">
+                                        Contraseña es obligatoria
+                                    </div>
+                                </div>
+
+                                <div class="d-flex align-items-center">
+                                    <button type="button" id="loginButton" class="btn btn-primary ms-auto">
+                                        Iniciar sesión
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="card-footer py-3 border-0">
+                            <div class="text-center">
+                                No tienes una cuenta? <a href="register.html" class="text-dark">Registrarme</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <script src="./assets/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="./assets/sweetalert/js/sweetalert2.all.min.js"></script>
+    <script>
+        document.getElementById('loginButton').addEventListener('click', function() {
+            const user = document.getElementById('user').value;
+            const password = document.getElementById('password').value;
+
+            if (!user || !password) {
+                Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: "Todos los campos son obligatorios.",
+                });
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('user', user);
+            formData.append('password', password);
+
+            fetch('./php/login.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    Swal.fire({
+                        icon: "success",
+                        title: "Inicio de sesión exitoso",
+                        showConfirmButton: false,
+                        timer: 3000,
+                        timerProgressBar: true
+                    }).then(() => {
+                        window.location.href = 'dashboard.php'; // Redirigir al panel de usuario u otra página
+                    });
+                } else {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Error",
+                        text: data.message,
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: "Ha ocurrido un error. Por favor, inténtalo de nuevo más tarde.",
+                });
+            });
+        });
+    </script>
+</body>
+</html>
